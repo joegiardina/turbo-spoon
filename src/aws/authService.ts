@@ -22,10 +22,6 @@ export const signIn = async (username: string, password: string) => {
     AuthParameters: {
       USERNAME: username,
       PASSWORD: password,
-      // SECRET_HASH: crypto
-      //   .createHmac("sha256", CLIENT_SECRET)
-      //   .update(`${username}${config.clientId}`)
-      //   .digest("base64"),
     },
   };
   try {
@@ -82,3 +78,9 @@ export const confirmSignUp = async (username: string, code: string) => {
     throw error;
   }
 };
+
+export const signOut = () => {
+  sessionStorage.removeItem("idToken");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("refreshToken");
+}

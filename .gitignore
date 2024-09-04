@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+lambda/node_modules
+lambda/index.mjs
+lambda/*.zip

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {signIn, signUp, confirmSignUp} from './aws/authService';
+import {signIn, signUp, confirmSignUp, signOut} from './aws/authService';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -11,6 +11,7 @@ function App() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmationCode, setConfirmationCode] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  const accessToken = sessionStorage.getItem('accessToken') || '';
 
   const handleSignIn = async (e: {preventDefault: () => void}) => {
     e.preventDefault();
@@ -62,96 +63,94 @@ function App() {
         <p>
           Welcome
         </p>
-          <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
-            <div style={{flex: 1, flexDirection: 'column'}}>
-              <div>
-                <TextField
-                  id="email"
-                  type="email"
-                  label="Email"
-                  margin="dense"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div>
-                <TextField
-                  id="password"
-                  type="password"
-                  label="Password"
-                  margin="dense"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
+          {!accessToken ? (
+            <>
+              <form onSubmit={isSignUp ? handleSignUp : handleSignIn}>
+                <div style={{flex: 1, flexDirection: 'column'}}>
+                  <div>
+                    <TextField
+                      id="email"
+                      type="email"
+                      label="Email"
+                      margin="dense"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      id="password"
+                      type="password"
+                      label="Password"
+                      margin="dense"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  {isSignUp && (
+                    <>
+                      <div>
+                        <TextField
+                          className="inputText"
+                          id="confirmPassword"
+                          type="password"
+                          label="Confirm Password"
+                          margin="dense"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <TextField
+                          className="inputText"
+                          id="confirmationCode"
+                          type="numeric"
+                          label="Confirmation Code"
+                          margin="dense"
+                          value={confirmationCode}
+                          onChange={(e) => setConfirmationCode(e.target.value)}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <Button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</Button>
+                </div>
+              </form>
+              <Button onClick={() => setIsSignUp(!isSignUp)}>
+                {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+              </Button>
               {isSignUp && (
-                <div>
-                  <TextField
-                    className="inputText"
-                    id="confirmPassword"
-                    type="password"
-                    label="Confirm Password"
-                    margin="dense"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
-                </div>
+                <Button onClick={handleConfirm}>
+                  Confirm
+                </Button>
               )}
-                <div>
-                  <TextField
-                    className="inputText"
-                    id="confirmationCode"
-                    type="numeric"
-                    label="Confirmation Code"
-                    margin="dense"
-                    value={confirmationCode}
-                    onChange={(e) => setConfirmationCode(e.target.value)}
-                  />
-                </div>
-              <Button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</Button>
-            </div>
-          </form>
-          <Button onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
-          </Button>
-          <Button onClick={handleConfirm}>
-            Confirm
-          </Button>
-          <Button onClick={async () => {
-            const accessToken = sessionStorage.getItem('accessToken');
-            if (!accessToken) return;
-            console.log(accessToken);
+            </>
+          ) : null}
+          <Button onClick={async () => {  
             try {
               const resp = await fetch('https://w1e1ps4u4l.execute-api.us-west-1.amazonaws.com/test/cog-test', {
                 headers: {
-                  Authorization: 'Bearer ' + accessToken
+                  Authorization: accessToken
                 }
-              })
-            } catch (e) {
-              console.log(e);
+              });
+              alert(resp.status);
+            } catch (e: any) {
+              alert('failed')
             }
           }}>
-            Test
+            Test auth
           </Button>
-          <Button onClick={async () => {
-            const accessToken = sessionStorage.getItem('accessToken');
-            if (!accessToken) return;
-            console.log(accessToken);
-            try {
-              const resp = await fetch('https://w1e1ps4u4l.execute-api.us-west-1.amazonaws.com/test/cog-test-2', {
-                headers: {
-                  Authorization: 'Bearer ' + accessToken
-                }
-              })
-            } catch (e) {
-              console.log(e);
-            }
-          }}>
-            Test 2
-          </Button>
+          {accessToken && (
+            <Button onClick={(e) => {
+              signOut();
+              window.location.reload();
+            }}>
+              Sign Out
+            </Button>
+          )}
       </header>
     </div>
   );
