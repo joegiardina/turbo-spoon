@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { signIn, signUp, confirmSignUp, signOut } from './aws/authService';
+import {signIn, signUp, confirmSignUp, signOut} from './aws/authService';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
