@@ -22,10 +22,6 @@ export const signIn = async (username: string, password: string) => {
     AuthParameters: {
       USERNAME: username,
       PASSWORD: password,
-      // SECRET_HASH: crypto
-      //   .createHmac("sha256", CLIENT_SECRET)
-      //   .update(`${username}${config.clientId}`)
-      //   .digest("base64"),
     },
   };
   try {

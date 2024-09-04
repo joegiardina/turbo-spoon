@@ -1,0 +1,24 @@
+{
+  "name": "turbo-spoon-lambda",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "clean": "touch verifyTokenLambda.zip && rm verifyTokenLambda.zip",
+    "zip": "npm run clean && zip -r verifyTokenLambda.zip .",
+    "prepFile": "tsc && mv index.js index.mjs && npm run zip",
+    "deploy": "npm run prepFile && aws lambda update-function-code --function-name cog-authorizer-lambda --zip-file fileb://verifyTokenLambda.zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "jsonwebtoken": "^9.0.2",
+    "jwk-to-pem": "^2.0.6",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jwk-to-pem": "^2.0.3"
+  }
+}
