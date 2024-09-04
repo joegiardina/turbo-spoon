@@ -130,7 +130,6 @@ function App() {
             </>
           ) : null}
           <Button onClick={async () => {  
-            const accessToken = sessionStorage.getItem('accessToken') || '';
             try {
               const resp = await fetch('https://w1e1ps4u4l.execute-api.us-west-1.amazonaws.com/test/cog-test', {
                 headers: {
