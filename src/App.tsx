@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { signIn, signUp, confirmSignUp } from './aws/authService';
+import { signIn, signUp, confirmSignUp, signOut } from './aws/authService';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -90,39 +90,43 @@ function App() {
                     />
                   </div>
                   {isSignUp && (
-                    <div>
-                      <TextField
-                        className="inputText"
-                        id="confirmPassword"
-                        type="password"
-                        label="Confirm Password"
-                        margin="dense"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                      />
-                    </div>
+                    <>
+                      <div>
+                        <TextField
+                          className="inputText"
+                          id="confirmPassword"
+                          type="password"
+                          label="Confirm Password"
+                          margin="dense"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <TextField
+                          className="inputText"
+                          id="confirmationCode"
+                          type="numeric"
+                          label="Confirmation Code"
+                          margin="dense"
+                          value={confirmationCode}
+                          onChange={(e) => setConfirmationCode(e.target.value)}
+                        />
+                      </div>
+                    </>
                   )}
-                    <div>
-                      <TextField
-                        className="inputText"
-                        id="confirmationCode"
-                        type="numeric"
-                        label="Confirmation Code"
-                        margin="dense"
-                        value={confirmationCode}
-                        onChange={(e) => setConfirmationCode(e.target.value)}
-                      />
-                    </div>
                   <Button type="submit">{isSignUp ? 'Sign Up' : 'Sign In'}</Button>
                 </div>
               </form>
               <Button onClick={() => setIsSignUp(!isSignUp)}>
                 {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
               </Button>
-              <Button onClick={handleConfirm}>
-                Confirm
-              </Button>
+              {isSignUp && (
+                <Button onClick={handleConfirm}>
+                  Confirm
+                </Button>
+              )}
             </>
           ) : null}
           <Button onClick={async () => {  
@@ -132,13 +136,22 @@ function App() {
                 headers: {
                   Authorization: accessToken
                 }
-              })
-            } catch (e) {
-              console.log(e);
+              });
+              alert(resp.status);
+            } catch (e: any) {
+              alert('failed')
             }
           }}>
-            Test
+            Test auth
           </Button>
+          {accessToken && (
+            <Button onClick={(e) => {
+              signOut();
+              window.location.reload();
+            }}>
+              Sign Out
+            </Button>
+          )}
       </header>
     </div>
   );

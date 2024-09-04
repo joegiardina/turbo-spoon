@@ -78,3 +78,9 @@ export const confirmSignUp = async (username: string, code: string) => {
     throw error;
   }
 };
+
+export const signOut = () => {
+  sessionStorage.removeItem("idToken");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("refreshToken");
+}
